@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>407</width>
+    <height>307</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>361</width>
+      <height>242</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="hL_MainLayout">
+     <item>
+      <widget class="QGroupBox" name="gGB_Write">
+       <property name="title">
+        <string>功能码(06H):写保持寄存器</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lE_Slave_W"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lE_Registor_W"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="l_Registor_W">
+          <property name="text">
+           <string>寄存器地址</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="l_Data_W">
+          <property name="text">
+           <string>数值(十进制)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="l_Slave_W">
+          <property name="text">
+           <string>从机地址</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lE_Data_W"/>
+        </item>
+        <item row="5" column="0" colspan="2">
+         <widget class="QPushButton" name="pB_Send_W">
+          <property name="text">
+           <string>发送</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="gGB_Read">
+       <property name="title">
+        <string>功能码(04H):读输入寄存器</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lE_Slave_R"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="l_Registor_R">
+          <property name="text">
+           <string>寄存器地址</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="l_Slave_R">
+          <property name="text">
+           <string>从机地址</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lE_Data_R"/>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="lE_Registor_R"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="l_Data_R">
+          <property name="text">
+           <string>个数(十进制)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="2">
+         <widget class="QPushButton" name="pB_Send_R">
+          <property name="text">
+           <string>发送</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>407</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>串口</string>
+    </property>
+    <addaction name="action"/>
+   </widget>
+   <addaction name="menu"/>
+  </widget>
+  <action name="actionshezhi">
+   <property name="text">
+    <string>shezhi</string>
+   </property>
+  </action>
+  <action name="actionsef">
+   <property name="text">
+    <string>sef </string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>设置</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
