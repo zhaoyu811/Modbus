@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
+#include <QDateTime>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -33,28 +34,61 @@ void MainWindow::SettingsUI_Show(void)
 
 void MainWindow::on_pB_Send_W_clicked()
 {
+    qint64 start = QDateTime::currentDateTime().toMSecsSinceEpoch();
     ctx = modbus_new_rtu(s->serial.name, s->serial.baudRate, s->serial.parity,\
                          s->serial.dataBits, s->serial.stopBits);
 
+    QStringList dataList;
+    dataList = ui->lE_Data_W->text().split(" ");
+    unsigned short *data = new unsigned short[dataList.length()];
+
+    for(int i=0; i<dataList.length(); i++)
+    {
+        data[i] = dataList.at(i).toUShort();
+    }
+
     if (modbus_connect(ctx) == -1) {
-         QMessageBox::information(this,tr("打开串口失败"),tr("打开串口失败"),QMessageBox::Yes);
+         qint64 end = QDateTime::currentDateTime().toMSecsSinceEpoch();
+         QMessageBox::information(this,tr("打开串口失败"),tr("打开串口失败, 耗时%1ms").arg(end-start),QMessageBox::Yes);
          modbus_free(ctx);
          return;
     }
 
     modbus_set_slave(ctx, ui->lE_Slave_W->text().toInt());
 
-    if (modbus_write_register(ctx, ui->lE_Registor_W->text().toInt(), ui->lE_Data_W->text().toInt()) == 1)
+    if(dataList.length()==1)
     {
-        modbus_close(ctx);
-        modbus_free(ctx);
-        QMessageBox::information(this,tr("写入成功"),tr("写入成功"),QMessageBox::Yes);
+        if (modbus_write_register(ctx, ui->lE_Registor_W->text().toInt(), ui->lE_Data_W->text().toInt()) == 1)
+        {
+            qint64 end = QDateTime::currentDateTime().toMSecsSinceEpoch();
+            modbus_close(ctx);
+            modbus_free(ctx);
+            QMessageBox::information(this,tr("写入成功"),tr("写入成功, 耗时%1ms").arg(end-start),QMessageBox::Yes);
+        }
+        else
+        {
+            qint64 end = QDateTime::currentDateTime().toMSecsSinceEpoch();
+            modbus_close(ctx);
+            modbus_free(ctx);
+            QMessageBox::information(this,tr("写入失败"),tr("写入失败, 耗时%1ms").arg(end-start),QMessageBox::Yes);
+        }
     }
-    else
+    else if(dataList.length()>1)
     {
-        modbus_close(ctx);
-        modbus_free(ctx);
-        QMessageBox::information(this,tr("写入失败"),tr("写入失败"),QMessageBox::Yes);
+        if(modbus_write_registers(ctx, ui->lE_Registor_W->text().toInt(), dataList.length(), data) == dataList.length())
+        {
+            qint64 end = QDateTime::currentDateTime().toMSecsSinceEpoch();
+            modbus_close(ctx);
+            modbus_free(ctx);
+            QMessageBox::information(this,tr("写入成功"),tr("写入成功, 耗时%1ms").arg(end-start),QMessageBox::Yes);
+        }
+        else
+        {
+            qint64 end = QDateTime::currentDateTime().toMSecsSinceEpoch();
+            modbus_close(ctx);
+            modbus_free(ctx);
+            QMessageBox::information(this,tr("写入失败"),tr("写入失败, 耗时%1ms").arg(end-start),QMessageBox::Yes);
+        }
     }
 }
 
@@ -64,11 +98,14 @@ void MainWindow::on_pB_Send_R_clicked()
 
     qDebug()<<s->serial.name;
 
+    qint64 start = QDateTime::currentDateTime().toMSecsSinceEpoch();
+
     ctx = modbus_new_rtu(s->serial.name, s->serial.baudRate, s->serial.parity,\
                          s->serial.dataBits, s->serial.stopBits);
 
     if (modbus_connect(ctx) == -1) {
-         QMessageBox::information(this,tr("打开串口失败"),tr("打开串口失败"),QMessageBox::Yes);
+         qint64 end = QDateTime::currentDateTime().toMSecsSinceEpoch();
+         QMessageBox::information(this,tr("打开串口失败"),tr("打开串口失败, 耗时%1ms").arg(end-start),QMessageBox::Yes);
          modbus_free(ctx);
          return;
     }
@@ -78,6 +115,7 @@ void MainWindow::on_pB_Send_R_clicked()
     if (modbus_read_input_registers(ctx, ui->lE_Registor_R->text().toInt(), ui->lE_Data_R->text().toInt(), dest)\
                             == ui->lE_Data_R->text().toInt())
     {
+        qint64 end = QDateTime::currentDateTime().toMSecsSinceEpoch();
         QString ret_data = tr("数据:");
         for(int i=0; i<ui->lE_Data_R->text().toInt(); i++)
         {
@@ -87,7 +125,7 @@ void MainWindow::on_pB_Send_R_clicked()
         modbus_close(ctx);
         modbus_free(ctx);
 
-        QMessageBox::information(this,tr("读取成功"),ret_data,QMessageBox::Yes);
+        QMessageBox::information(this,tr("读取成功"),tr("%1, 耗时%2ms").arg(ret_data).arg(end-start),QMessageBox::Yes);
 
         qDebug()<<"从机地址"<<ui->lE_Slave_R->text().toInt()\
                 <<"寄存器地址"<<ui->lE_Registor_R->text().toInt()\
@@ -96,8 +134,9 @@ void MainWindow::on_pB_Send_R_clicked()
     }
     else
     {
+        qint64 end = QDateTime::currentDateTime().toMSecsSinceEpoch();
         modbus_close(ctx);
         modbus_free(ctx);
-        QMessageBox::information(this,tr("读取失败"),tr("读取失败"),QMessageBox::Yes);
+        QMessageBox::information(this,tr("读取失败"),tr("读取失败, 耗时%1ms").arg(end-start),QMessageBox::Yes);
     }
 }
